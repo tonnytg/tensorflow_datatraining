@@ -1,28 +1,25 @@
-import collections
 import pathlib
-
-import matplotlib.pyplot as plt
+import ssl
+import urllib.request
 import tensorflow as tf
-
-from tensorflow.keras import layers
-from tensorflow.keras import losses
 from tensorflow.keras import utils
-from tensorflow.keras.layers import TextVectorization
 
-import os
+# Desabilitar verificação SSL
+ssl._create_default_https_context = ssl._create_unverified_context
 
-files_dir = "./texts"
+data_url = 'https://storage.googleapis.com/download.tensorflow.org/data/stack_overflow_16k.tar.gz'
 
-def load_and_preprocess_texts(file_path):
-    with open(file_path, 'r') as file:
-        files_content = file.read()
-    return files_content
+dataset_dir = utils.get_file(
+    origin=data_url,
+    untar=True,
+    cache_dir='stack_overflow',
+    cache_subdir='')
 
-files_paths = [os.path.join(files_dir, filename) for filename in os.listdir(files_dir)]
-
-files_data = [load_and_preprocess_texts(file_path) for file_path in files_paths]
-
-dataset_dir = pathlib.Path(files_dir)
+dataset_dir = pathlib.Path(dataset_dir).parent
 list(dataset_dir.iterdir())
 train_dir = dataset_dir/'train'
 list(train_dir.iterdir())
+sample_file = train_dir/'python/1755.txt'
+
+with open(sample_file) as f:
+  print(f.read())
